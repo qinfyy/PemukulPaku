@@ -61,6 +61,9 @@ namespace HttpServer.Models
 
         [JsonProperty("server_ext")]
         public ServerExt ServerExt { get; set; }
+
+        [JsonProperty("manifest")]
+        public manifest manifest { get; set; }
     }
 
     public partial class Ext
@@ -181,6 +184,27 @@ namespace HttpServer.Models
 
         [JsonProperty("mihoyo_sdk_env")]
         public string MihoyoSdkEnv { get; set; }
+    }
+
+    public class manifest
+    {
+        [JsonProperty("Audio")]
+        public Audio Audio { get; set; }
+    }
+
+    public class platform
+    {
+        [JsonProperty("Windows")]
+        public string Windows { get; set; }
+    }
+
+    public class Audio
+    {
+        [JsonProperty("platform")]
+        public platform Platform { get; set; }
+
+        [JsonProperty("revision")]
+        public uint revision { get; set; }
     }
 }
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.

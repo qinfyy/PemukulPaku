@@ -25,7 +25,7 @@ namespace HttpServer
             ConfigController.AddHandlers(app);
 
             app.UseMiddleware<RequestLoggingMiddleware>();
-            c.Log($"HTTP server started on port 80 & 443"); // A lie
+            c.Log($"HTTP server started on port {Global.config.Http.HttpPort} & {Global.config.Http.HttpsPort}"); // A lie
             app.Run();
         }
 

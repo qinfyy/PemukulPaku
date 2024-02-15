@@ -17,7 +17,7 @@ namespace HttpServer.Controllers
                     RegionList = new Region[] {
                         new Region() {
                             Retcode = 0,
-                            DispatchUrl = $"http://{Global.config.Gameserver.Host}/query_gateway",
+                            DispatchUrl = $"http://{Global.config.Http.Host}:{Global.config.Http.HttpPort}/query_gateway",
                             Name = Global.config.Gameserver.RegionName,
                             Title = "",
                             Ext = GetExt(ctx.Request.Query["version"].ToString())
@@ -42,8 +42,8 @@ namespace HttpServer.Controllers
                     Retcode = 0,
                     Msg = "",
                     RegionName = Global.config.Gameserver.RegionName,
-                    AccountUrl = $"http://{Global.config.Gameserver.Host}/account",
-                    AccountUrlBackup = $"http://{Global.config.Gameserver.Host}/account",
+                    AccountUrl = $"http://{Global.config.Http.Host}:{Global.config.Http.HttpPort}/account",
+                    AccountUrlBackup = $"http://{Global.config.Http.Host}:{Global.config.Http.HttpPort}/account",
                     AssetBundleUrlList = GetAssetBundleUrlList(Version),
                     ExAudioAndVideoUrlList = GetExAudioAndVideoUrlList(Version),
                     ExResourceUrlList = GetExResourceUrlList(Version),
@@ -51,14 +51,15 @@ namespace HttpServer.Controllers
                     Gameserver = Gameserver,
                     Gateway = Gameserver,
                     IsDataReady = true,
-                    OaserverUrl = $"http://{Global.config.Gameserver.Host}/oaserver",
+                    OaserverUrl = $"http://{Global.config.Http.Host}:{Global.config.Http.HttpPort}/oaserver",
                     ServerCurTime = Global.GetUnixInSeconds(),
                     ServerCurTimezone = 8,
                     ServerExt = new ServerExt()
                     {
-                        CdkeyUrl = $"http://{Global.config.Gameserver.Host}/common",
+                        CdkeyUrl = $"http://{Global.config.Http.Host}:{Global.config.Http.HttpPort}/common",
                         MihoyoSdkEnv = "2"
-                    }
+                    },
+                    manifest = GetManifest()
                 };
                 ctx.Response.Headers.Add("Content-Type", "application/json");
                 return ctx.Response.WriteAsync(JsonConvert.SerializeObject(rsp));
@@ -113,8 +114,8 @@ namespace HttpServer.Controllers
                     case "os":
                         return Global.config.UseLocalCache ? new string[]
                         {
-                            $"http://{Global.config.Gameserver.Host}/asset_bundle/overseas01/1.1",
-                            $"http://{Global.config.Gameserver.Host}/asset_bundle/overseas01/1.1"
+                            $"https://{Global.config.Http.AssetServerHost}/asset_bundle/overseas01/1.1",
+                            $"https://{Global.config.Http.AssetServerHost}/asset_bundle/overseas01/1.1"
                         } : new string[]
                         {
                             "https://hk-bundle-os-mihayo.akamaized.net/asset_bundle/overseas01/1.1",
@@ -125,8 +126,8 @@ namespace HttpServer.Controllers
                         {
                             return Global.config.UseLocalCache ? new string[]
                             {
-                                $"https://{Global.config.Gameserver.Host}/asset_bundle/beta_release/1.0",
-                                $"https://{Global.config.Gameserver.Host}/asset_bundle/beta_release/1.0"
+                                $"https://{Global.config.Http.AssetServerHost}/asset_bundle/beta_release/1.0",
+                                $"https://{Global.config.Http.AssetServerHost}/asset_bundle/beta_release/1.0"
                             } : new string[]
                             {
                                 "https://bh3rd-beta-qcloud.bh3.com/asset_bundle/beta_release/1.0",
@@ -135,8 +136,8 @@ namespace HttpServer.Controllers
                         }
                         return Global.config.UseLocalCache ? new string[]
                         {
-                            $"https://{Global.config.Gameserver.Host}/asset_bundle/android01/1.0",
-                            $"https://{Global.config.Gameserver.Host}/asset_bundle/android01/1.0"
+                            $"https://{Global.config.Http.AssetServerHost}/asset_bundle/android01/1.0",
+                            $"https://{Global.config.Http.AssetServerHost}/asset_bundle/android01/1.0"
                         } : new string[]
                         {
                             "https://bundle-qcloud.bh3.com/asset_bundle/android01/1.0",
@@ -145,8 +146,8 @@ namespace HttpServer.Controllers
                     case "global":
                         return Global.config.UseLocalCache ? new string[]
                         {
-                            $"https://{Global.config.Gameserver.Host}/asset_bundle/usa01/1.1",
-                            $"https://{Global.config.Gameserver.Host}/asset_bundle/usa01/1.1"
+                            $"https://{Global.config.Http.AssetServerHost}/asset_bundle/usa01/1.1",
+                            $"https://{Global.config.Http.AssetServerHost}/asset_bundle/usa01/1.1"
                         } : new string[]
                         {
                             "http://hk-bundle-west-mihayo.akamaized.net/asset_bundle/usa01/1.1",
@@ -155,8 +156,8 @@ namespace HttpServer.Controllers
                     default:
                         return Global.config.UseLocalCache ? new string[]
                         {
-                            $"http://{Global.config.Gameserver.Host}/asset_bundle/overseas01/1.1",
-                            $"http://{Global.config.Gameserver.Host}/asset_bundle/overseas01/1.1"
+                            $"https://{Global.config.Http.AssetServerHost}/asset_bundle/overseas01/1.1",
+                            $"https://{Global.config.Http.AssetServerHost}/asset_bundle/overseas01/1.1"
                         } : new string[]
                         {
                             "https://hk-bundle-os-mihayo.akamaized.net/asset_bundle/overseas01/1.1",
@@ -168,8 +169,8 @@ namespace HttpServer.Controllers
             {
                 return Global.config.UseLocalCache ? new string[]
                 {
-                    $"http://{Global.config.Gameserver.Host}/asset_bundle/overseas01/1.1",
-                    $"http://{Global.config.Gameserver.Host}/asset_bundle/overseas01/1.1"
+                    $"https://{Global.config.Http.AssetServerHost}/asset_bundle/overseas01/1.1",
+                    $"https://{Global.config.Http.AssetServerHost}/asset_bundle/overseas01/1.1"
                 } : new string[]
                 {
                     "https://hk-bundle-os-mihayo.akamaized.net/asset_bundle/overseas01/1.1",
@@ -192,8 +193,8 @@ namespace HttpServer.Controllers
                     case "os":
                         return Global.config.UseLocalCache ? new string[]
                         {
-                            $"{Global.config.Gameserver.Host}/com.miHoYo.bh3oversea",
-                            $"{Global.config.Gameserver.Host}/com.miHoYo.bh3oversea"
+                            $"{Global.config.Http.AssetServerHost}/com.miHoYo.bh3oversea",
+                            $"{Global.config.Http.AssetServerHost}/com.miHoYo.bh3oversea"
                         } : new string[]
                         {
                             "hk-bigfile-os-mihayo.akamaized.net/com.miHoYo.bh3oversea",
@@ -204,8 +205,8 @@ namespace HttpServer.Controllers
                         {
                             return Global.config.UseLocalCache ? new string[]
                             {
-                                $"{Global.config.Gameserver.Host}/tmp/CGAudio",
-                                $"{Global.config.Gameserver.Host}/tmp/CGAudio"
+                                $"{Global.config.Http.AssetServerHost}/tmp/CGAudio",
+                                $"{Global.config.Http.AssetServerHost}/tmp/CGAudio"
                             } : new string[]
                             {
                                 "bh3rd-beta-qcloud.bh3.com/tmp/CGAudio",
@@ -239,8 +240,8 @@ namespace HttpServer.Controllers
                     case "os":
                         return Global.config.UseLocalCache ? new string[]
                         {
-                            $"{Global.config.Gameserver.Host}/com.miHoYo.bh3oversea",
-                            $"{Global.config.Gameserver.Host}/com.miHoYo.bh3oversea"
+                            $"{Global.config.Http.AssetServerHost}/com.miHoYo.bh3oversea",
+                            $"{Global.config.Http.AssetServerHost}/com.miHoYo.bh3oversea"
                         } : new string[]
                         {
                             "hk-bigfile-os-mihayo.akamaized.net/com.miHoYo.bh3oversea",
@@ -251,8 +252,8 @@ namespace HttpServer.Controllers
                         {
                             return Global.config.UseLocalCache ? new string[]
                             {
-                                $"{Global.config.Gameserver.Host}/tmp/beta",
-                                $"{Global.config.Gameserver.Host}/tmp/beta"
+                                $"{Global.config.Http.AssetServerHost}/tmp/beta",
+                                $"{Global.config.Http.AssetServerHost}/tmp/beta"
                             } : new string[]
                             {
                                 "bh3rd-beta-qcloud.bh3.com/tmp/beta",
@@ -261,8 +262,8 @@ namespace HttpServer.Controllers
                         }
                         return Global.config.UseLocalCache ? new string[]
                         {
-                            $"{Global.config.Gameserver.Host}/tmp/Original",
-                            $"{Global.config.Gameserver.Host}/tmp/Original"
+                            $"{Global.config.Http.AssetServerHost}/tmp/Original",
+                            $"{Global.config.Http.AssetServerHost}/tmp/Original"
                         } : new string[]
                         {
                             "bundle-qcloud.bh3.com/tmp/Original",
@@ -271,8 +272,8 @@ namespace HttpServer.Controllers
                     case "global":
                         return Global.config.UseLocalCache ? new string[]
                         {
-                            $"{Global.config.Gameserver.Host}/tmp/com.miHoYo.bh3global",
-                            $"{Global.config.Gameserver.Host}/tmp/com.miHoYo.bh3global"
+                            $"{Global.config.Http.AssetServerHost}/tmp/com.miHoYo.bh3global",
+                            $"{Global.config.Http.AssetServerHost}/tmp/com.miHoYo.bh3global"
                         } : new string[]
                         {
                             "hk-bundle-west-mihayo.akamaized.net/tmp/com.miHoYo.bh3global",
@@ -281,8 +282,8 @@ namespace HttpServer.Controllers
                     default:
                         return Global.config.UseLocalCache ? new string[]
                         {
-                            $"{Global.config.Gameserver.Host}/com.miHoYo.bh3oversea",
-                            $"{Global.config.Gameserver.Host}/com.miHoYo.bh3oversea"
+                            $"{Global.config.Http.AssetServerHost}/com.miHoYo.bh3oversea",
+                            $"{Global.config.Http.AssetServerHost}/com.miHoYo.bh3oversea"
                         } : new string[]
                         {
                             "hk-bigfile-os-mihayo.akamaized.net/com.miHoYo.bh3oversea",
@@ -294,14 +295,29 @@ namespace HttpServer.Controllers
             {
                 return Global.config.UseLocalCache ? new string[]
                 {
-                    $"{Global.config.Gameserver.Host}/com.miHoYo.bh3oversea",
-                    $"{Global.config.Gameserver.Host}/com.miHoYo.bh3oversea"
+                    $"{Global.config.Http.AssetServerHost}/com.miHoYo.bh3oversea",
+                    $"{Global.config.Http.AssetServerHost}/com.miHoYo.bh3oversea"
                 } : new string[]
                 {
                     "hk-bigfile-os-mihayo.akamaized.net/com.miHoYo.bh3oversea",
                     "bigfile-aliyun-os.honkaiimpact3.com/com.miHoYo.bh3oversea"
                 };
             }
+        }
+
+        public static manifest GetManifest()
+        {
+            return new manifest()
+            {
+                Audio = new Audio()
+                {
+                    Platform = new platform
+                    {
+                        Windows = "manifest_0b6ab335.m"
+                    },
+                    revision = 650645u
+                }
+            };
         }
     }
 }

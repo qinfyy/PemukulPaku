@@ -13,13 +13,15 @@ namespace PemukulPaku
     {
         public static void Main()
         {
-#if DEBUG
-            Global.config.VerboseLevel = VerboseLevel.Debug;
-#endif
+            if (!System.IO.File.Exists(Global.configFile))
+            {
+                Global.CreateConfigFile();
+            }
+
             Global.c.Log("Starting...");
 
-            if (Global.config.Gameserver.Host == "127.0.0.1")
-                Global.config.Gameserver.Host = NetworkInterface.GetAllNetworkInterfaces().Where(i => i.NetworkInterfaceType != NetworkInterfaceType.Loopback && i.OperationalStatus == OperationalStatus.Up).First().GetIPProperties().UnicastAddresses.Where(a => a.Address.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork).First().Address.ToString();
+            //if (Global.config.Gameserver.Host == "127.0.0.1")
+            //    Global.config.Gameserver.Host = NetworkInterface.GetAllNetworkInterfaces().Where(i => i.NetworkInterfaceType != NetworkInterfaceType.Loopback && i.OperationalStatus == OperationalStatus.Up).First().GetIPProperties().UnicastAddresses.Where(a => a.Address.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork).First().Address.ToString();
 
             CommandFactory.LoadCommandHandlers();
             PacketFactory.LoadPacketHandlers();
